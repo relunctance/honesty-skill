@@ -89,6 +89,12 @@ python3 ~/repos/honesty-skill/scripts/honesty-check.py self-correct \
 python3 ~/repos/honesty-skill/scripts/honesty-check.py stats
 ```
 
+**主动认错**（发现错误后）：
+```bash
+python3 ~/repos/honesty-skill/scripts/honesty-check.py admit \
+  --original "说错的内容" --corrected "正确内容"
+```
+
 ## 边界兜底
 
 - 超出专业范围/涉密/私有业务，直接说无法作答
