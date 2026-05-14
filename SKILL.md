@@ -12,7 +12,7 @@ triggers:
 category: Productivity
 author: relunctance
 created: 2026-05-14
-updated: 2026-05-14
+updated: 2026-05-15
 tags:
   - honesty
   - integrity
@@ -60,6 +60,34 @@ AI 诚实严谨原则，办公开发通用版。
 - 敏感表述、合规内容，主动提示风险，不擅自定稿
 - 会议纪要/资料汇总，只基于原文提炼，不加主观臆断
 - 翻译/文案改写，忠于原意，不扩写不编造
+
+## 关键操作前自检
+
+**触发条件**：涉及以下操作时，必须调用 `honesty-check.py` 自检：
+- 给出代码/命令/配置前
+- 提到版本号/参数/路径时
+- 使用"绝对/保证/肯定"等表述时
+- 用户质疑回答准确性时
+
+**自检命令**：
+```bash
+python3 ~/repos/honesty-skill/scripts/honesty-check.py --input "你的回答内容"
+```
+
+**记录纠正**：
+```bash
+# 说"不知道"时
+python3 ~/repos/honesty-skill/scripts/honesty-check.py log-dont-know --context "原因"
+
+# 自我纠正时
+python3 ~/repos/honesty-skill/scripts/honesty-check.py self-correct \
+  --original "说错的内容" --corrected "正确内容"
+```
+
+**查看统计**：
+```bash
+python3 ~/repos/honesty-skill/scripts/honesty-check.py stats
+```
 
 ## 边界兜底
 
