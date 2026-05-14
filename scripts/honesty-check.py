@@ -289,7 +289,8 @@ def cmd_review(args) -> str:
     lines = ["## 🔍 完整诚实自检"]
 
     # 检查最近回答
-    if args.recent:
+    recent = getattr(args, 'recent', False)
+    if recent:
         lines.append("\n📋 最近回答自检（请对照诚实原则检查）：")
         lines.append("请逐条对照以下原则：")
         lines.append("1. 结论是否有依据？")
@@ -327,11 +328,18 @@ def main():
 
     sub = parser.add_subparsers(dest="cmd")
 
-    sub.add_parser("check", help="检查文字内容")
-    sub.add_parser("log-dont-know", help="记录一次「不知道」")
-    sub.add_parser("self-correct", help="记录一次自我纠正")
     sub.add_parser("stats", help="查看统计")
-    sub.add_parser("review", help="完整自检报告")
+
+    p_log_dont_know = sub.add_parser("log-dont-know", help="记录一次「不知道」")
+    p_log_dont_know.add_argument("--context", default="", help="上下文说明")
+
+    p_self_correct = sub.add_parser("self-correct", help="记录一次自我纠正")
+    p_self_correct.add_argument("--original", default="", help="原始错误说法")
+    p_self_correct.add_argument("--corrected", default="", help="正确说法")
+
+    p_review = sub.add_parser("review", help="完整自检报告")
+    p_review.add_argument("--recent", action="store_true", help="针对最近回答自检")
+
     p_admit = sub.add_parser("admit", help="主动认错")
     p_admit.add_argument("--original", required=True, help="原始错误说法")
     p_admit.add_argument("--corrected", required=True, help="正确说法")
