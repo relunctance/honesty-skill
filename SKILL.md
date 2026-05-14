@@ -1,5 +1,5 @@
 ---
-name: honesty-principles
+name: honesty-skill
 description: AI诚实严谨原则 — 办公开发通用版，避免瞎编、强制校验、边界兜底
 triggers:
   - 诚实原则
@@ -20,7 +20,7 @@ tags:
   - productivity
 ---
 
-# honesty-principles
+# honesty-skill
 
 AI 诚实严谨原则，办公开发通用版。
 
