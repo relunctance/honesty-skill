@@ -135,6 +135,29 @@ python3 honesty-check.py admit \
   --corrected "正确内容"
 ```
 
+## 踩坑记录
+
+### WSL 路径陷阱：Path.home() 展开错误
+
+**问题**：WSL 下 `~` 展开为 `/home/gql/.hermes/profiles/baijie/home/`，导致 `.openclaw` 路径错误。
+
+```python
+# ❌ 错误：Path.home() 在 WSL 里指向 hermes profile 目录
+openclaw_base = Path.home() / ".openclaw"
+# Path.home() = /home/gql/.hermes/profiles/baijie/home/
+# 结果：openclaw_base = /home/gql/.hermes/profiles/baijie/home/.openclaw/  ← 错误！
+
+# ✅ 正确：使用硬编码绝对路径
+openclaw_base = Path("/home/gql/.openclaw")
+```
+
+**涉及路径**：
+- `~/.openclaw/` → 实际 `/home/gql/.openclaw/`
+- `~/.hermes/` → 实际 `/home/gql/.hermes/`
+- 但 `~/.hermes/profiles/baijie/SOUL.md` 的 `~` 展开是**对的**（因为 profile 本身就是 home）
+
+**判断方法**：`Path.home()` 的返回值如果包含 `.hermes/profiles`，说明在 Hermes/OpenClaw profile 环境里，路径需要用绝对路径重写。
+
 ## 边界兜底
 
 - 超出专业范围/涉密/私有业务 → 直接说无法作答
