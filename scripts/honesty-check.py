@@ -8,7 +8,7 @@ honesty-check — 诚实自检脚本
   python honesty-check.py --stats                       # 查看诚实记录统计
   python honesty-check.py --review                     # 完整自检报告
 
-每次完成重要任务后，AI 应调用此脚本进行自检。
+状态文件：通过 platform_detect.state_file() 获取（平台自适应，profile/workspace 隔离）
 """
 
 import argparse
@@ -19,8 +19,10 @@ import sys
 from datetime import datetime
 from typing import Optional
 
-LOG_FILE = os.path.expanduser("~/.hermes/.honesty-log.json")
-PATTERNS_FILE = os.path.expanduser("~/.hermes/.honesty-patterns.json")
+from platform_detect import state_file
+
+LOG_FILE = state_file(".honesty-log.json")
+PATTERNS_FILE = state_file(".honesty-patterns.json")
 
 
 # ─── 红旗模式（高度怀疑瞎编） ──────────────────────────────────
