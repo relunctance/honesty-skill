@@ -19,8 +19,8 @@ import sys
 from datetime import datetime
 from typing import Optional
 
-LOG_FILE = os.path.expanduser("~/.hermes/profiles/baijie/.honesty-log.json")
-PATTERNS_FILE = os.path.expanduser("~/.hermes/profiles/baijie/.honesty-patterns.json")
+LOG_FILE = os.path.expanduser("~/.hermes/.honesty-log.json")
+PATTERNS_FILE = os.path.expanduser("~/.hermes/.honesty-patterns.json")
 
 
 # ─── 红旗模式（高度怀疑瞎编） ──────────────────────────────────
