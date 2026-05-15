@@ -42,7 +42,9 @@ python3 ~/repos/skill-sync/scripts/sync-hermes-skills.py install-honesty
 此命令将「禁止瞎编」核心规则**覆盖写入 SOUL.md**：
 
 - **Hermes**：`~/.hermes/profiles/baijie/SOUL.md`
-- **OpenClaw**：从当前工作目录自动推断 `~/.openclaw/workspace-{name}/SOUL.md`
+- **OpenClaw**：从当前工作目录自动推断 workspace SOUL.md（如 `~/.openclaw/workspace/SOUL.md`）
+
+> **跨平台说明**：脚本自动检测 WSL 环境并使用正确的 home 路径，无需手动修改。
 
 SOUL.md 是 agent 的永久记忆核心，每次对话都会加载。写入后，**禁止瞎编规则在每次对话中都生效**，无法被忽略。
 
@@ -139,24 +141,30 @@ python3 honesty-check.py admit \
 
 ### WSL 路径陷阱：Path.home() 展开错误
 
-**问题**：WSL 下 `~` 展开为 `/home/gql/.hermes/profiles/baijie/home/`，导致 `.openclaw` 路径错误。
+**问题**：WSL 下 Hermes/OpenClaw profile 环境里，`Path.home()` 展开为 `~/.hermes/profiles/xxx/home/`，导致 `~/.openclaw/` 路径指向错误位置。
 
 ```python
-# ❌ 错误：Path.home() 在 WSL 里指向 hermes profile 目录
+# ❌ 错误：在 WSL profile 环境下
 openclaw_base = Path.home() / ".openclaw"
-# Path.home() = /home/gql/.hermes/profiles/baijie/home/
-# 结果：openclaw_base = /home/gql/.hermes/profiles/baijie/home/.openclaw/  ← 错误！
+# Path.home() = /home/<user>/.hermes/profiles/xxx/home/
+# 结果：openclaw_base 指向 profile 下的错误路径
 
-# ✅ 正确：使用硬编码绝对路径
-openclaw_base = Path("/home/gql/.openclaw")
+# ✅ 正确：检测 WSL 并回退到标准 home
+def _get_home() -> str:
+    if platform.system() == "Linux" and _os.path.exists("/proc/version"):
+        with open("/proc/version") as f:
+            if "WSL" in f.read():
+                user = _os.environ.get("USER", "root")
+                return f"/home/{user}"
+    return str(Path.home())
 ```
 
 **涉及路径**：
-- `~/.openclaw/` → 实际 `/home/gql/.openclaw/`
-- `~/.hermes/` → 实际 `/home/gql/.hermes/`
-- 但 `~/.hermes/profiles/baijie/SOUL.md` 的 `~` 展开是**对的**（因为 profile 本身就是 home）
+- `~/.openclaw/` 在 WSL 下需要用 `/home/<user>/.openclaw/`
+- `~/.hermes/` 同上
+- 但 profile 自己的路径（如 `~/.hermes/profiles/baijie/`）不需要改
 
-**判断方法**：`Path.home()` 的返回值如果包含 `.hermes/profiles`，说明在 Hermes/OpenClaw profile 环境里，路径需要用绝对路径重写。
+**判断方法**：`Path.home()` 的返回值如果包含 `.hermes/profiles`，说明在 profile 环境里，`.openclaw`/`.hermes` 等共享目录需要用 `/home/<user>/` 前缀。
 
 ## 边界兜底
 
