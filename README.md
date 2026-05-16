@@ -20,6 +20,11 @@ tags:
   - productivity
 ---
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![version](https://img.shields.io/badge/version-1.0.0-green.svg)](#)
+[![platforms](https://img.shields.io/badge/platforms-hermes%20%7C%20claude%20%7C%20openclaw-blue.svg)](#)
+[![category](https://img.shields.io/badge/category-Productivity-blue.svg)](#)
+
 # honesty-skill
 
 AI 诚实严谨原则，办公开发通用版。
